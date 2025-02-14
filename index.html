@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zeynep ❤️</title>
+    <style>
+        body {
+            margin: 0;
+            overflow-x: hidden;
+            background: radial-gradient(circle, #000428, #004e92);
+            color: white;
+            font-family: Arial, sans-serif;
+        }
+        .heart-placeholder {
+            width: 100%;
+            text-align: center;
+            margin: 50px 0;
+            font-size: 24px;
+            cursor: pointer;
+        }
+        .heart-placeholder img {
+            width: 60px;
+            height: 60px;
+        }
+        .photo-row, .message-container, .photo-row-bottom {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin: 20px;
+        }
+        .photo-slot {
+            width: 30%;
+            margin: 10px;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0px 2px 10px rgba(0,0,0,0.3);
+        }
+        .photo-slot img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        .message-container {
+            background: #fefefe;
+            color: #333;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0px 4px 15px rgba(0,0,0,0.3);
+            margin: 20px auto;
+            max-width: 600px;
+        }
+        .play-music {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background: #ff5733;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        @media (max-width: 768px) {
+            .photo-slot { width: 80%; }
+        }
+
+    </style>
+</head>
+<body>
+    <div class="background-image" id="backgroundImage" style="background-image: url('background-image-url.jpg');"></div>
+    <div class="heart-placeholder" id="startHeart">
+        <img src="heart-svgrepo-com.png" alt="kalp">Bana Tıkla
+    </div>
+    <canvas class="fireworks" id="fireworksCanvas"></canvas>
+    <div class="photo-slot left-top" id="photoLeftTop"><img src="f1.jpg" alt="Fotoğraf"></div>
+    <div class="photo-slot left-middle" id="photoLeftMiddle"><img src="f2.jpg" alt="Fotoğraf"></div>
+    <div class="photo-slot left-bottom" id="photoLeftBottom"><img src="f3.jpg" alt="Fotoğraf"></div>
+    <div class="photo-slot right-top" id="photoRightTop"><img src="f4.jpg" alt="Fotoğraf"></div>
+    <div class="photo-slot right-middle" id="photoRightMiddle"><img src="f5.jpg" alt="Fotoğraf"></div>
+    <div class="photo-slot right-bottom" id="photoRightBottom"><img src="f6.jpg" alt="Fotoğraf"></div>
+    <div class="message-container" id="message">
+        <div class="message-text">
+            <p>
+                Canım Avradım, <br>
+                    <br>
+                Hayatıma kattığın güzellikleri anlatmaya kelimeler yetmez ama yine de deneyeceğim. Gülüşünle bile tüm kötü günlerimi unutturan, yanımda olduğunda her şeyi mümkün kılan o özel insansın sen. Bazen sadece sana bakıp, “Ne kadar şanslıyım” diye düşünüyorum. Seninle olmak, her anı daha anlamlı ve değerli kılıyor. <br>
+                    <br>
+                Her anımda, her hayalimde varsın. Birlikte daha nice güzel anılar biriktirmek dileğiyle... Seni çoooook seviyorum. ❤️ Götünü yerim. <br>
+                <br>
+                Beraber bol bol 14 şubatlara ve 1 nisanlara ENTER, <br>
+                <br> 
+                Kadir <br> 
+            </p>
+                
+        </div>
+        <button class="play-music" id="playMusicButton">Tıkla ve Şarkı Çalsın</button>
+    </div>
+
+    <script>
+        const startHeart = document.getElementById('startHeart');
+        const fireworksCanvas = document.getElementById('fireworksCanvas');
+        const message = document.getElementById('message');
+        const photoSlots = document.querySelectorAll('.photo-slot');
+        const playMusicButton = document.getElementById('playMusicButton');
+        const ctx = fireworksCanvas.getContext('2d');
+
+        fireworksCanvas.width = window.innerWidth;
+        fireworksCanvas.height = window.innerHeight;
+
+        let fireworks = [];
+        let animationInterval;
+
+        class Firework {
+            constructor(x, y, colors) {
+                this.x = x;
+                this.y = y;
+                this.colors = colors;
+                this.particles = [];
+                for (let i = 0; i < 100; i++) {
+                    this.particles.push({
+                        x: this.x,
+                        y: this.y,
+                        dx: (Math.random() - 0.5) * 10,
+                        dy: (Math.random() - 0.5) * 10,
+                        size: Math.random() * 3,
+                        color: this.colors[Math.floor(Math.random() * this.colors.length)],
+                        life: Math.random() * 100 + 100,
+                    });
+                }
+            }
+            update() {
+                this.particles.forEach(p => {
+                    p.x += p.dx;
+                    p.y += p.dy;
+                    p.life--;
+                });
+                this.particles = this.particles.filter(p => p.life > 0);
+            }
+            draw() {
+                this.particles.forEach(p => {
+                    ctx.fillStyle = p.color;
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                    ctx.fill();
+                });
+            }
+        }
+
+        function createFirework() {
+            fireworks.push(new Firework(
+                Math.random() * fireworksCanvas.width,
+                Math.random() * fireworksCanvas.height,
+                ['#ff5733', '#33ff57', '#5733ff', '#f7dc6f']
+            ));
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, fireworksCanvas.width, fireworksCanvas.height);
+            fireworks.forEach(firework => {
+                firework.update();
+                firework.draw();
+            });
+            fireworks = fireworks.filter(firework => firework.particles.length > 0);
+        }
+
+        function startFireworks() {
+            animationInterval = setInterval(() => {
+                createFirework();
+            }, 500);
+            requestAnimationFrame(loop);
+        }
+
+        function loop() {
+            animate();
+            requestAnimationFrame(loop);
+        }
+
+        startHeart.addEventListener('click', () => {
+            startHeart.style.display = 'none';
+            photoSlots.forEach(slot => slot.style.display = 'block');
+            message.style.display = 'block';
+            startFireworks();
+        });
+
+        playMusicButton.addEventListener('click', () => {
+            const audio = new Audio('Ahmet Kaya - Sözüm Şiirlerin Mükemmelidir.mp3');
+            audio.play();
+        });
+    </script>
+</body>
+</html>
